@@ -1,0 +1,27 @@
+# TestRail MCP Server, on-prem. One stateless container: no database, no
+# volumes, no config file. Everything it needs comes from .env in this
+# folder (copy .env.example and edit it).
+#
+#   docker compose up -d                       # start
+#   docker compose logs -f                     # watch it
+#   docker compose pull && docker compose up -d  # pick up a patch release
+#
+# Upgrading to a new release line: download that release's bundle, which
+# carries its own line below, or set TESTRAIL_MCP_VERSION in .env.
+services:
+  testrail-mcp:
+    # The default tag is the release line this bundle shipped with (stamped by
+    # the release; `latest` only in an unreleased copy). Pinning the x.y line
+    # means `docker compose pull` only ever picks up patch releases of it.
+    image: ${TESTRAIL_MCP_IMAGE:-testrail/mcp}:${TESTRAIL_MCP_VERSION:-0.1}
+    ports:
+      # Host port -> the container's fixed listen port.
+      - "${TESTRAIL_MCP_PORT:-8000}:8000"
+    environment:
+      TESTRAIL_ON_PREM_INSTANCE: ${TESTRAIL_ON_PREM_INSTANCE:?set TESTRAIL_ON_PREM_INSTANCE in .env}
+      MCP_LOG_FORMAT: ${MCP_LOG_FORMAT:-human}
+      SEMBI_TOOL_TIMEOUT_SECONDS: ${SEMBI_TOOL_TIMEOUT_SECONDS:-120}
+      TESTRAIL_VERSION_CHECK_URL: ${TESTRAIL_VERSION_CHECK_URL:-}
+    # The image carries its own health check on /health, so `docker compose
+    # ps` shows the container as healthy once the server answers.
+    restart: unless-stopped
