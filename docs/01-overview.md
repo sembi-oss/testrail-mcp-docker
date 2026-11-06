@@ -25,7 +25,7 @@ The TestRail MCP Server lets any MCP-compatible agent (Claude Code, Claude Deskt
 ## Downloads
 
 - Container image: `testrail/mcp` on Docker Hub, tagged `x.y.z`, `x.y` and `latest`.
-- Compose bundle (`docker-compose.yml`, `.env.example`, this documentation): <https://github.com/gurock/testrail-mcp-docker>.
+- Compose bundle (`docker-compose.yml`, `.env.example`, this documentation): <https://github.com/sembi-oss/testrail-mcp-docker>.
 
 The image's version (`x.y.z`) is the MCP server's own, not a TestRail version, so you do not pick an image to match your TestRail Server. The server detects the version of your TestRail instance and hides the tools that version does not support (see "Hidden tools" in the upgrading article).
 
