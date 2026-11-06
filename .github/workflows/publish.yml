@@ -1,0 +1,12 @@
+name: Publish
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  publish:
+    uses: sembi-public/oss-publication-workflows/.github/workflows/publish.yml@v1
+    secrets: inherit
