@@ -2,23 +2,26 @@
 
 ## Upgrading
 
-The server keeps no state, so an upgrade is a new container from a newer image. Agents are asked to run `check_mcp_version` at the start of each session, which tells you whether a newer release exists and how to install it. Images are tagged three ways:
+The server keeps no state, so an upgrade is a new container from a newer image. Agents are asked to run `check_mcp_version` at the start of each session, which tells you whether a newer release exists and how to install it. Each image download carries two tags:
 
-| Tag      | Moves when                      | Use it for                                                                |
-| -------- | ------------------------------- | ------------------------------------------------------------------------- |
-| `x.y.z`  | never                           | Reproducible deployments.                                                 |
-| `x.y`    | each patch release of that line | Production: `docker compose pull` picks up fixes without feature changes. |
-| `latest` | every release                   | Evaluation only.                                                          |
+| Tag     | Points at                                       | Use it for                                                            |
+| ------- | ----------------------------------------------- | --------------------------------------------------------------------- |
+| `x.y.z` | that release, always                            | Reproducible deployments: set `TESTRAIL_MCP_VERSION=x.y.z` in `.env`. |
+| `x.y`   | the newest release of that line you have loaded | The compose bundle's default: loading a patch release moves it.       |
 
 These tags version the MCP server, not TestRail. Upgrading the image does not touch your TestRail instance, and upgrading TestRail does not require a new image: the server detects the new version and offers the tools it supports. A newer image is what adds tools for TestRail features released after the image you run (see "Hidden tools" below).
 
-With the compose bundle, each release's `docker-compose.yml` names its own `x.y` line, so a patch release is one command:
+With the compose bundle, each release's `docker-compose.yml` names its own `x.y` line. For a patch release, download its image file for your architecture, check and load it as in Getting started, and recreate the container; Compose sees that `x.y` now points at the new image:
 
 ```zsh
-docker compose pull && docker compose up -d
+sha256sum -c testrail-mcp-x.y.z-linux-amd64.tar.gz.sha256   # macOS: shasum -a 256 -c ...
+docker load -i testrail-mcp-x.y.z-linux-amd64.tar.gz
+docker compose up -d
 ```
 
-For a new release line, download that release's bundle and replace `docker-compose.yml` with its copy (your `.env` is untouched), or set `TESTRAIL_MCP_VERSION` in `.env` to the line or exact version you want and run the same command. `.env` wins over the bundle's default, so clear it again when you next replace the compose file.
+For a new release line, load its image the same way, then download that release's bundle and replace `docker-compose.yml` with its copy (your `.env` is untouched), or set `TESTRAIL_MCP_VERSION` in `.env` to the line or exact version you want, and run `docker compose up -d`. `.env` wins over the bundle's default, so clear it again when you next replace the compose file.
+
+Older images stay in Docker after an upgrade, so going back is setting `TESTRAIL_MCP_VERSION` to the earlier `x.y.z` and running `docker compose up -d`. Remove one you no longer need with `docker image rm testrail/mcp:x.y.z`.
 
 Agents reconnect on their next request; nothing has to be reconfigured on their side. The release notes on each GitHub release say when a release needs a newer TestRail Server version than the one before, because tools that need a newer TestRail are hidden rather than failing (see "Hidden tools" below).
 
@@ -60,7 +63,7 @@ tool gating: TestRail version unknown for testrail.corp.example; 94/107 tools ad
 
 The container trusts a standard list of public certificate authorities, and nothing else. If TestRail is served over https with a certificate from your own CA, every call fails certificate verification until the container is given that CA. Put the CA certificate in a PEM file, mount it into the container, and point `SSL_CERT_FILE` at it.
 
-The setting replaces the built-in list rather than adding to it, so the file must also hold any public CA the container still needs. The only other places the container connects are TestRail's update-check endpoint and Docker Hub's tag list for the image. If you leave the public CAs out, `check_testrail_version` falls back to the version shipped with the image and `check_mcp_version` reports the latest release as unknown; to skip both requests, set `TESTRAIL_VERSION_CHECK_URL=off` and `TESTRAIL_MCP_VERSION_CHECK_URL=off`.
+The setting replaces the built-in list rather than adding to it, so the file must also hold any public CA the container still needs. The only other places the container connects are TestRail's update-check endpoint and the compose bundle's `VERSION` file on GitHub. If you leave the public CAs out, `check_testrail_version` falls back to the version shipped with the image and `check_mcp_version` reports the latest release as unknown; to skip both requests, set `TESTRAIL_VERSION_CHECK_URL=off` and `TESTRAIL_MCP_VERSION_CHECK_URL=off`.
 
 With Compose, add a `docker-compose.override.yml` next to `docker-compose.yml` (Compose reads it automatically; the fixed variable list in the main file does not carry `SSL_CERT_FILE`):
 
@@ -90,20 +93,15 @@ except urllib.error.HTTPError as error:
 '
 ```
 
-## Checking what you pulled
+## Checking what you loaded
 
-The images are not signed yet. They are published only by Sembi, to the `testrail` organization on Docker Hub, where each tag's digest is listed on the repository's Tags page.
+The images are not signed yet. They are provided only by Sembi, and each image file comes with a `.sha256` file holding its checksum: `sha256sum -c` (on macOS `shasum -a 256 -c`) with that file answers `OK` only for an intact download. Get both files from the same place Sembi sent you to, and do not load a file whose check fails.
 
-To see exactly which image a container runs:
-
-```zsh
-docker inspect --format '{{index .RepoDigests 0}}' testrail/mcp:x.y.z
-```
-
-To make sure an upgrade changes nothing you did not choose, pin the digest in `docker-compose.yml` (`image: testrail/mcp@sha256:<digest>`) and move it when you decide to upgrade.
-
-Every image also carries a software bill of materials (SBOM), listing the packages inside it:
+Once loaded, the image ID identifies exactly what a tag points at, and the version label says which release it is:
 
 ```zsh
-docker buildx imagetools inspect testrail/mcp:x.y.z --format '{{ json .SBOM }}'
+docker image inspect --format '{{.Id}}' testrail/mcp:x.y.z
+docker image inspect --format '{{index .Config.Labels "org.opencontainers.image.version"}}' testrail/mcp:x.y.z
 ```
+
+Comparing the ID before and after you load a file shows whether `x.y` moved, and `docker compose ps` together with `docker inspect --format '{{.Image}}' <container>` shows which image a running container uses.

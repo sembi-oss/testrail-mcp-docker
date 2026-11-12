@@ -19,19 +19,19 @@ The on-prem TestRail MCP Server lets any MCP-host (Claude Code, Claude Desktop, 
 ## Requirements
 
 - A TestRail Server instance the container can reach over the network, with the API enabled (Administration, Site Settings, API). Every user who connects an agent needs an API key from their "My Settings" page.
-- Docker Engine with the Compose plugin, or any container runtime that can run an OCI image. The image is published for `linux/amd64` and `linux/arm64`.
+- Docker Engine with the Compose plugin, or any container runtime that can run an OCI image. The image is provided for `linux/amd64` and `linux/arm64`.
 - Outbound network access from the container to your TestRail Server instance. Nothing else is required: the optional check for the latest TestRail Server and MCP Server releases can be switched off for air-gapped sites.
 - A reverse proxy for TLS between the agents and the server. The server speaks plain HTTP and every request carries a user's API key.
 
 ## Downloads
 
-- Container image: `testrail/mcp` on Docker Hub, tagged `x.y.z`, `x.y` and `latest`.
+- Container image: `testrail/mcp`, as a download from Sembi: one `.tar.gz` file per architecture, each with a `.sha256` checksum file, that you load with `docker load`. Each one carries the tags `x.y.z` and `x.y`.
 - Compose bundle (`docker-compose.yml`, `.env.example`, this documentation): <https://github.com/sembi-oss/testrail-mcp-docker>.
 
 The image's version (`x.y.z`) is the MCP server's own, not a TestRail Server version, so you do not pick an image to match your TestRail Server. The server detects the version of your TestRail Server instance and provides the matching MCP tools that version does not support (see "Hidden tools" in the upgrading article).
 
 ## Continued
 
-1. [Getting started](../README.md): pull, run, open the documentation page, connect an agent.
+1. [Getting started](../README.md): load the image, run it, open the documentation page, connect an agent.
 2. [Configuration](03-configuration.md): environment variables, ports, TLS, logging, access tiers.
 3. [Upgrading and troubleshooting](04-upgrading-and-troubleshooting.md): pinning versions, finding out what is running, common errors.
