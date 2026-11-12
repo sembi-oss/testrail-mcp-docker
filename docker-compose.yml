@@ -13,7 +13,7 @@ services:
     # The default tag is the release line this bundle shipped with (stamped by
     # the release; `latest` only in an unreleased copy). Pinning the x.y line
     # means `docker compose pull` only ever picks up patch releases of it.
-    image: ${TESTRAIL_MCP_IMAGE:-testrail/mcp}:${TESTRAIL_MCP_VERSION:-0.1}
+    image: ${TESTRAIL_MCP_IMAGE:-testrail/mcp}:${TESTRAIL_MCP_VERSION:-0.2}
     ports:
       # Host port -> the container's fixed listen port.
       - "${TESTRAIL_MCP_PORT:-8000}:8000"
@@ -22,6 +22,7 @@ services:
       MCP_LOG_FORMAT: ${MCP_LOG_FORMAT:-human}
       SEMBI_TOOL_TIMEOUT_SECONDS: ${SEMBI_TOOL_TIMEOUT_SECONDS:-120}
       TESTRAIL_VERSION_CHECK_URL: ${TESTRAIL_VERSION_CHECK_URL:-}
+      TESTRAIL_MCP_VERSION_CHECK_URL: ${TESTRAIL_MCP_VERSION_CHECK_URL:-}
     # The image carries its own health check on /health, so `docker compose
     # ps` shows the container as healthy once the server answers.
     restart: unless-stopped

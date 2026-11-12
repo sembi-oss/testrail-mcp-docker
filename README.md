@@ -1,6 +1,6 @@
-# TestRail MCP Server on-prem: getting started
+# MCP for TestRail Server: Getting Started
 
-This article takes you from nothing to an agent talking to your TestRail Server through the MCP server. It takes about ten minutes. Replace `https://testrail.corp.example` with the URL of your TestRail instance as the container will reach it, including the path if TestRail is mounted under one (for example `https://testrail.corp.example/testrail`).
+This article takes you from nothing to an agent talking to your TestRail Server through the MCP server. It takes about ten minutes. Replace `https://testrail.corp.example` with the URL of your TestRail Server instance as the container will reach it, including the path if TestRail is mounted under one (for example `https://testrail.corp.example/testrail`).
 
 ## 1. Prepare TestRail
 
@@ -48,7 +48,7 @@ If the container exits instead, `docker compose logs` tells you why. The two sta
 The documentation page at the server's root URL is the place to do this, because it generates the exact command for your instance and server address:
 
 1. Enter your TestRail email and API key in the form. They stay in the browser; the page only uses them to fill in the snippets below it.
-2. Pick your agent host (Claude Code, Claude Desktop, Codex CLI, Cursor, GitHub Copilot in VS Code, Zed, Windsurf, or a generic MCP host).
+2. Pick your MCP host (Claude Code, Claude Desktop, Codex CLI, Cursor, GitHub Copilot in VS Code, Zed, Windsurf, or a generic MCP host).
 3. Run the command or paste the configuration it shows.
 
 For Claude Code, for example, the page produces a command of this shape:
@@ -67,6 +67,6 @@ Before anyone outside a test machine uses it, publish the server through your re
 
 ## More documentation
 
-- [TestRail MCP Server on-prem: overview](docs/01-overview.md)
-- [TestRail MCP Server on-prem: configuration](docs/03-configuration.md)
-- [TestRail MCP Server on-prem: upgrading and troubleshooting](docs/04-upgrading-and-troubleshooting.md)
+- [MCP for TestRail Server: Overview](docs/01-overview.md)
+- [MCP for TestRail Server: Configuration](docs/03-configuration.md)
+- [MCP for TestRail Server: Upgrading and Troubleshooting](docs/04-upgrading-and-troubleshooting.md)
