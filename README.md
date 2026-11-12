@@ -33,11 +33,11 @@ The image is the server itself. How Docker runs it (the port, the restart policy
 1. Get the bundle for release `0.2.1`, the same release as the image you loaded, into a folder on the Docker host. With git:
 
    ```zsh
-   git clone --branch 0.2.1 https://github.com/sembi-oss/testrail-mcp-docker.git
+   git clone --branch v0.2.1 https://github.com/sembi-oss/testrail-mcp-docker.git
    cd testrail-mcp-docker
    ```
 
-   Without git, download <https://github.com/sembi-oss/testrail-mcp-docker/archive/refs/tags/0.2.1.zip>, unpack it and change into the folder it creates. The bundle and the image must come from the same release: its `docker-compose.yml` runs `testrail/mcp:0.2`, and a bundle from another release line would look for a tag you have not loaded.
+   Without git, download <https://github.com/sembi-oss/testrail-mcp-docker/archive/refs/tags/v0.2.1.zip>, unpack it and change into the folder it creates. The bundle's release tags carry a `v` in front of the image's version (`v0.2.1` for image `0.2.1`). The bundle and the image must come from the same release: its `docker-compose.yml` runs `testrail/mcp:0.2`, and a bundle from another release line would look for a tag you have not loaded.
 
 2. In that folder, copy `.env.example` to `.env` and set `TESTRAIL_ON_PREM_INSTANCE` to your instance URL:
 
