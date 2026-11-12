@@ -32,6 +32,6 @@ The image's version (`x.y.z`) is the MCP server's own, not a TestRail Server ver
 
 ## Continued
 
-1. [Getting started](../README.md): load the image, run it, open the documentation page, connect an agent.
+1. [Getting started](02-getting-started.md): load the image, run it, open the documentation page, connect an agent.
 2. [Configuration](03-configuration.md): environment variables, ports, TLS, logging, access tiers.
 3. [Upgrading and troubleshooting](04-upgrading-and-troubleshooting.md): pinning versions, finding out what is running, common errors.

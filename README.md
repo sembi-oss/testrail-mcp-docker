@@ -28,7 +28,7 @@ docker load -i testrail-mcp-0.2.1-linux-amd64.tar.gz
 
 ## 3. Start the server with Docker Compose
 
-The image is the server itself. How Docker runs it (the port, the restart policy, your settings) comes in a second, small download: the compose bundle, a public GitHub repository with a `docker-compose.yml`, an `.env.example` and this documentation. It holds no image and needs no login. If you are reading this article as the bundle's `README.md`, you already have it.
+The image is the server itself. How Docker runs it (the port, the restart policy, your settings) comes in a second, small download: the compose bundle, a public GitHub repository with a `docker-compose.yml`, an `.env.example` and this documentation. It holds no image and needs no login. If you are reading this article in the bundle, as its `README.md` or in its `docs` folder, you already have it.
 
 1. Get the bundle for release `0.2.1`, the same release as the image you loaded, into a folder on the Docker host. With git:
 
