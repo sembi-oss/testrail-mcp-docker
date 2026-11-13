@@ -25,7 +25,7 @@ The on-prem TestRail MCP Server lets any MCP-host (Claude Code, Claude Desktop, 
 
 ## Downloads
 
-- Container image: `testrail/mcp`, as a download from Sembi: one `.tar.gz` file per architecture, each with a `.sha256` checksum file, that you load with `docker load`. Each one carries the tags `0.2.1` and `0.2`.
+- Container image: `testrail/mcp`, as a download from Sembi: one `.tar.gz` file per architecture, each with a `.sha256` checksum file, that you load with `docker load`. Each one carries the tags `0.2.2` and `0.2`.
 - Compose bundle (`docker-compose.yml`, `.env.example`, this documentation): <https://github.com/sembi-oss/testrail-mcp-docker>.
 
 The image's version (`x.y.z`) is the MCP server's own, not a TestRail Server version, so you do not pick an image to match your TestRail Server. The server detects the version of your TestRail Server instance and provides the matching MCP tools that version does not support (see "Hidden tools" in the upgrading article).
