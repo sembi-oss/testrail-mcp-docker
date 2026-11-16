@@ -4,15 +4,16 @@
 #
 #   docker compose up -d                       # start
 #   docker compose logs -f                     # watch it
-#   docker compose pull && docker compose up -d  # pick up a patch release
 #
+# Picking up a patch release: check and load its image file, then run
+# `docker compose up -d` again (docs/04-upgrading-and-troubleshooting.md).
 # Upgrading to a new release line: download that release's bundle, which
 # carries its own line below, or set TESTRAIL_MCP_VERSION in .env.
 services:
   testrail-mcp:
     # The default tag is the release line this bundle shipped with (stamped by
-    # the release; `latest` only in an unreleased copy). Pinning the x.y line
-    # means `docker compose pull` only ever picks up patch releases of it.
+    # the release; `latest` only in an unreleased copy). Loading a patch release
+    # of that x.y line moves the tag, so the next `docker compose up -d` runs it.
     image: ${TESTRAIL_MCP_IMAGE:-testrail/mcp}:${TESTRAIL_MCP_VERSION:-0.2}
     ports:
       # Host port -> the container's fixed listen port.

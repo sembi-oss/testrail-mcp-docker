@@ -19,9 +19,21 @@ docker load -i testrail-mcp-x.y.z-linux-amd64.tar.gz
 docker compose up -d
 ```
 
+If you pinned an exact release with `TESTRAIL_MCP_VERSION=x.y.z` in `.env`, loading a newer image does not move your pin: set `TESTRAIL_MCP_VERSION` to the new release's `x.y.z` before you run `docker compose up -d`. A pin to an `x.y` line behaves like the bundle's default.
+
 For a new release line, load its image the same way, then download that release's bundle and replace `docker-compose.yml` with its copy (your `.env` is untouched), or set `TESTRAIL_MCP_VERSION` in `.env` to the line or exact version you want, and run `docker compose up -d`. `.env` wins over the bundle's default, so clear it again when you next replace the compose file.
 
-Older images stay in Docker after an upgrade, so going back is setting `TESTRAIL_MCP_VERSION` to the earlier `x.y.z` and running `docker compose up -d`. Remove one you no longer need with `docker image rm testrail/mcp:x.y.z`.
+Without Compose, a container keeps the image it was started from, for a patch release and a new line alike. Check and load the image file as above, then remove the container and start it again from the new tag, with the same options you first started it with:
+
+```zsh
+docker rm -f testrail-mcp
+docker run -d --name testrail-mcp --restart unless-stopped \
+  -p 8000:8000 \
+  -e TESTRAIL_ON_PREM_INSTANCE=https://testrail.corp.example \
+  testrail/mcp:x.y.z
+```
+
+Older images stay in Docker after an upgrade, so going back is setting `TESTRAIL_MCP_VERSION` to the earlier `x.y.z` and running `docker compose up -d`, or, without Compose, starting the container again from the earlier tag. Remove one you no longer need with `docker image rm testrail/mcp:x.y.z`.
 
 Agents reconnect on their next request; nothing has to be reconfigured on their side. The release notes on each GitHub release say when a release needs a newer TestRail Server version than the one before, because tools that need a newer TestRail are hidden rather than failing (see "Hidden tools" below).
 
