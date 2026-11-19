@@ -13,31 +13,31 @@ The image comes as a download, one file per CPU architecture, each with a checks
 
 | File                                                  | For                                     |
 | ----------------------------------------------------- | --------------------------------------- |
-| `testrail-mcp-0.2.4-linux-amd64.tar.gz`         | Most Linux servers and Intel machines   |
-| `testrail-mcp-0.2.4-linux-arm64.tar.gz`         | ARM servers and Macs with Apple silicon |
-| `testrail-mcp-0.2.4-linux-<arch>.tar.gz.sha256` | The checksum of the file beside it      |
+| `testrail-mcp-0.3.0-linux-amd64.tar.gz`         | Most Linux servers and Intel machines   |
+| `testrail-mcp-0.3.0-linux-arm64.tar.gz`         | ARM servers and Macs with Apple silicon |
+| `testrail-mcp-0.3.0-linux-<arch>.tar.gz.sha256` | The checksum of the file beside it      |
 
 `uname -m` on the Docker host tells you which one you need: `x86_64` is `amd64`; `aarch64` or `arm64` is `arm64`. Download that file and its `.sha256` into the same folder, check that the download is intact, and load it into Docker:
 
 ```zsh
-sha256sum -c testrail-mcp-0.2.4-linux-amd64.tar.gz.sha256   # macOS: shasum -a 256 -c ...
-docker load -i testrail-mcp-0.2.4-linux-amd64.tar.gz
+sha256sum -c testrail-mcp-0.3.0-linux-amd64.tar.gz.sha256   # macOS: shasum -a 256 -c ...
+docker load -i testrail-mcp-0.3.0-linux-amd64.tar.gz
 ```
 
-`docker load` prints the two tags the image carries, `testrail/mcp:0.2.4` and `testrail/mcp:0.2`. Nothing is downloaded from a registry: Docker Compose, in the next step, runs the image you loaded.
+`docker load` prints the two tags the image carries, `testrail/mcp:0.3.0` and `testrail/mcp:0.3`. Nothing is downloaded from a registry: Docker Compose, in the next step, runs the image you loaded.
 
 ## 3. Start the server with Docker Compose
 
 The image is the server itself. How Docker runs it (the port, the restart policy, your settings) comes in a second, small download: the compose bundle, a public GitHub repository with a `docker-compose.yml`, an `.env.example` and this documentation. It holds no image and needs no login. If you are reading this article in the bundle, as its `README.md` or in its `docs` folder, you already have it.
 
-1. Get the bundle for release `0.2.4`, the same release as the image you loaded, into a folder on the Docker host. With git:
+1. Get the bundle for release `0.3.0`, the same release as the image you loaded, into a folder on the Docker host. With git:
 
    ```zsh
-   git clone --branch v0.2.4 https://github.com/sembi-oss/testrail-mcp-docker.git
+   git clone --branch v0.3.0 https://github.com/sembi-oss/testrail-mcp-docker.git
    cd testrail-mcp-docker
    ```
 
-   Without git, download <https://github.com/sembi-oss/testrail-mcp-docker/archive/refs/tags/v0.2.4.zip>, unpack it and change into the folder it creates. The bundle's release tags carry a `v` in front of the image's version (`v0.2.4` for image `0.2.4`). The bundle and the image must come from the same release: its `docker-compose.yml` runs `testrail/mcp:0.2`, and a bundle from another release line would look for a tag you have not loaded.
+   Without git, download <https://github.com/sembi-oss/testrail-mcp-docker/archive/refs/tags/v0.3.0.zip>, unpack it and change into the folder it creates. The bundle's release tags carry a `v` in front of the image's version (`v0.3.0` for image `0.3.0`). The bundle and the image must come from the same release: its `docker-compose.yml` runs `testrail/mcp:0.3`, and a bundle from another release line would look for a tag you have not loaded.
 
 2. In that folder, copy `.env.example` to `.env` and set `TESTRAIL_ON_PREM_INSTANCE` to your instance URL:
 
@@ -46,7 +46,7 @@ The image is the server itself. How Docker runs it (the port, the restart policy
    # then edit .env: TESTRAIL_ON_PREM_INSTANCE=https://testrail.corp.example
    ```
 
-   That is the only required setting. The other entries in `.env.example` are optional and described in the Configuration article. You do not pick an image version: `docker-compose.yml` already runs `testrail/mcp:0.2`, one of the two tags you loaded.
+   That is the only required setting. The other entries in `.env.example` are optional and described in the Configuration article. You do not pick an image version: `docker-compose.yml` already runs `testrail/mcp:0.3`, one of the two tags you loaded.
 
 3. Start it, from the same folder:
 
@@ -61,7 +61,7 @@ The log shows one line when the server is ready:
 TestRail MCP starting in on-prem mode: instance https://testrail.corp.example, API key auth only
 ```
 
-If Compose answers `pull access denied for testrail/mcp` instead, it did not find the loaded image under the tag it expects, so it tried to download it: run `docker image ls testrail/mcp` and check that the `0.2` tag in `docker-compose.yml` is listed, or load the image again (step 2).
+If Compose answers `pull access denied for testrail/mcp` instead, it did not find the loaded image under the tag it expects, so it tried to download it: run `docker image ls testrail/mcp` and check that the `0.3` tag in `docker-compose.yml` is listed, or load the image again (step 2).
 
 Without Compose, the equivalent `docker run` is:
 
@@ -69,7 +69,7 @@ Without Compose, the equivalent `docker run` is:
 docker run -d --name testrail-mcp --restart unless-stopped \
   -p 8000:8000 \
   -e TESTRAIL_ON_PREM_INSTANCE=https://testrail.corp.example \
-  testrail/mcp:0.2.4
+  testrail/mcp:0.3.0
 ```
 
 ## 4. Check that it runs

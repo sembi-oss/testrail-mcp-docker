@@ -14,7 +14,7 @@ services:
     # The default tag is the release line this bundle shipped with (stamped by
     # the release; `latest` only in an unreleased copy). Loading a patch release
     # of that x.y line moves the tag, so the next `docker compose up -d` runs it.
-    image: ${TESTRAIL_MCP_IMAGE:-testrail/mcp}:${TESTRAIL_MCP_VERSION:-0.2}
+    image: ${TESTRAIL_MCP_IMAGE:-testrail/mcp}:${TESTRAIL_MCP_VERSION:-0.3}
     ports:
       # Host port -> the container's fixed listen port.
       - "${TESTRAIL_MCP_PORT:-8000}:8000"
